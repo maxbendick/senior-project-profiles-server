@@ -8,25 +8,38 @@
 (use 'ring.middleware.content-type)
 
 
-(defmacro make-person
+(let [id (atom 0)]
+  (defn add-id [a]
+    "Adds an :id to a map"
+    (assoc a :id (swap! id inc))))
+
+(defn make-person
   "Constructs a person structure"
   [name twitter]
-  {:name name
-   :twitter-handle twitter})
+  (add-id {:name name :twitter-handle twitter}))
+
 
 (def people [(make-person "max" "maxbendick")
              (make-person "logan" "loganwilliams")
-             (make-person "nick" "")
-             (make-person "jose" "")
-             (make-person "krissy" "")
-             (make-person "david" "")])
+             (make-person "nick" "nicksinai")
+             (make-person "jose" "josecabrera")
+             (make-person "krissy" "krissywitous")
+             (make-person "david" "davidcornella")])
+
+(defn find-person
+  "Finds the person with a matching :id in people"
+  [id]
+  (first (filter #(= (:id %) id) people)))
 
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
 
   (GET "/profile/:id" [id]
-       {:body (get people (read-string id))})
+       (let [person (find-person (read-string id))]
+         (if person
+           {:body person}
+           {:status 404 :body "Not found"})))
 
   (route/not-found "Not found"))
 

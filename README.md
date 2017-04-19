@@ -12,6 +12,7 @@ Because we are using Service Account Credentials to access the Google API, you m
  * Store it anywhere, and set an environment variable (GOOGLE\_APPLICATION\_CREDENTIALS) to point to it
  * On Mac/Linux, rename and move the JSON file to be ~/.config/gcloud/application\_default\_credentials.json (making directories as needed)
  * On Windows, rename and move the JSON file to be %APPDATA%\gcloud\application\_default\_credentials.json (making directories as needed)
+ 
  _Instructions taken from https://github.com/SparkFund/google-apps-clj#using-service-account-credentials._
 
 ## Usage

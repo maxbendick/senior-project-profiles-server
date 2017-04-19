@@ -5,6 +5,7 @@ A Clojure library designed to act as the backend for the Vertible web app.
 ## Setup
 
 If you don't have the JDK, install it: http://www.oracle.com/technetwork/java/javase/downloads/index.html.
+
 If you don't have Leiningen, install it: https://leiningen.org/#install.
 
 Because we are using Service Account Credentials to access the Google API, you must have the private key JSON file and do one of the following:
@@ -16,9 +17,13 @@ Because we are using Service Account Credentials to access the Google API, you m
 ## Usage
 
 From the home directory of the repository, run ````lein repl````.
+
 In the repl, run ````(use 'senior-project-profiles-server.core :reload)````.
+
 Now you can try running requests against our app like:
+
 ````(app-routes {:request-method :get :uri "/"})````
+
 where you can change "/" to any path (e.g. "/profile/nameofsomeone")
 
 ## License

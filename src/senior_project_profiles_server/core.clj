@@ -7,7 +7,8 @@
             [google-apps-clj.google-drive :refer :all]
             [google-apps-clj.credentials :as gauth]
             [clj-http.client :as client]
-            [senior-project-profiles-server.markdown-processor :refer [compile-xmarkdown]]))
+            [senior-project-profiles-server.markdown-processor :refer [compile-xmarkdown]]
+            [clojure.string :as str]))
 
 (use 'ring.middleware.content-type)
 
@@ -31,7 +32,8 @@
     (re-find #":body (.*?), :|:body (.*?)}" input)
     (remove nil? input)
     (nth input 1)
-    (clojure.string/replace input #"\"" "")))
+    (clojure.string/replace input #"\\r\\n" "\n")
+    (clojure.string/replace input #"\\\"" "\"")))
 
 
 (defroutes app-routes
@@ -41,7 +43,12 @@
     (as-> (get-files) input
       (first (filter #(= (:title %) name) input))
       (if input
-        {:body (compile-xmarkdown (get-body (client/get (:export-text input))))} ; can't use {:as :clojure} because it cuts off part of the body
+        {:body (as-> input x
+                   (:export-text x)
+                   (client/get x)
+                   (get-body x)
+                   (subs x 2 (- (count x) 1))
+                   (compile-xmarkdown x))}; can't use {:as :clojure} because it cuts off part of the body
         NOT_FOUND_404)))
 
   (route/not-found "Not found"))

@@ -4,10 +4,10 @@
 (def parser
   (insta/parser
     "<profile>  = sexp+
-     <sexp>     = (space lparen operation rparen space)
+     <sexp>     = space (space lparen operation rparen space) space
      <lparen> = <'('>
      <rparen> = <')'>
-     <space>  = <#'[ ]*'>
+     <space>  = <#'[ ]*'> | '\n'
      <ssexp>  = space sexp space
 
      name = <'name'> string
@@ -23,6 +23,8 @@
      <string> = space <'\"'> #'[^\"]+' <'\"'> space
 
      "))
+
+;<#'[ ]*'> | <#'\\s+'> #'\\s+'
 
 (defn get-one-arg [ast key]
   (->> ast

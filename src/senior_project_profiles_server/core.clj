@@ -4,11 +4,13 @@
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response]]
+            [ring.util.response :refer [resource-response content-type redirect]]
             [google-apps-clj.google-drive :refer :all]
             [google-apps-clj.credentials :as gauth]
             [clj-http.client :as client]
             [senior-project-profiles-server.markdown-processor :refer [compile-xmarkdown]]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.java.io :as io]))
 
 (use 'ring.middleware.content-type)
 
@@ -50,6 +52,24 @@
                    (subs x 2 (- (count x) 1))
                    (compile-xmarkdown x))}; can't use {:as :clojure} because it cuts off part of the body
         NOT_FOUND_404)))
+
+  (GET "/app/*" []
+    (resource-response "index.html" {:root "public"}))
+
+  ;(GET "/app/*" []
+  ;  (-> (resource-response "index.html" {:root "public"})
+  ;      (content-type "text/html")))
+
+  ;(GET "/app/*" [] (redirect "/app"))
+
+
+  ;(GET "/blapp/*" []
+  ;  (-> (resource-response "index.html" {:root "public"})
+  ;      (content-type "text/html")))
+
+  ;(GET "/index.html" []
+  ;  (-> (resource-response "index.html" {:root "public"})
+  ;      (content-type "text/html")))
 
   (route/not-found "Not found"))
 

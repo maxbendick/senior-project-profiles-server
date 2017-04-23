@@ -24,8 +24,6 @@
 
      "))
 
-;<#'[ ]*'> | <#'\\s+'> #'\\s+'
-
 (defn get-one-arg [ast key]
   (->> ast
       (filter #(= (first %) key))

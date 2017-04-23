@@ -8,4 +8,6 @@
                  [ring/ring-json "0.4.0"]
                  [compojure "1.5.2"]
                  [google-apps-clj "0.6.1"]
-                 [clj-http "3.4.1"]])
+                 [clj-http "3.4.1"]]
+  :plugins [[lein-ring "0.9.7"]]
+  :ring {:handler senior-project-profiles-server.core/app})

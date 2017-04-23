@@ -15,7 +15,7 @@
 (use 'ring.middleware.content-type)
 
 (def DRIVE_FOLDER "0B3o1bAVuv7uLa09weC1GYVlLVGs")
-(def NOT_FOUND_404 {:status 404 :headers {"Content-Type" "text/html; charset=utf-8"} :body "Not found"})
+(def NOT_FOUND_404 {:status 404}); :headers {"Content-Type" "text/html; charset=utf-8"} :body "Not found"})
 
 
 (defn get-files []
@@ -53,23 +53,7 @@
                    (compile-xmarkdown x))}; can't use {:as :clojure} because it cuts off part of the body
         NOT_FOUND_404)))
 
-  (GET "/app/*" []
-    (resource-response "index.html" {:root "public"}))
-
-  ;(GET "/app/*" []
-  ;  (-> (resource-response "index.html" {:root "public"})
-  ;      (content-type "text/html")))
-
-  ;(GET "/app/*" [] (redirect "/app"))
-
-
-  ;(GET "/blapp/*" []
-  ;  (-> (resource-response "index.html" {:root "public"})
-  ;      (content-type "text/html")))
-
-  ;(GET "/index.html" []
-  ;  (-> (resource-response "index.html" {:root "public"})
-  ;      (content-type "text/html")))
+  (GET "/app/*" [] (io/resource "public/index.html"))
 
   (route/not-found "Not found"))
 

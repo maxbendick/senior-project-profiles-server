@@ -15,8 +15,9 @@
      position = <'position'> string
      company = <'company'> string
      card = <'card'> string markdown
+     pictureurl = <'pictureurl'> string
 
-     <operation> = name | twitter | position | company | card
+     <operation> = name | twitter | position | company | card | pictureurl
 
      <markdown> = space <'{'> #'[^}]+' <'}'> space
 
@@ -42,6 +43,7 @@
      :twitter  (get :twitter)
      :position (get :position)
      :company  (get :company)
+     :pictureurl (get :pictureurl)
      :cards    (cards-from-ast ast)}))
 
 (defn compile-xmarkdown [s]

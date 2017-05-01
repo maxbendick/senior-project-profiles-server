@@ -27,6 +27,19 @@ Now you can try running requests against our app like:
 
 where you can change "/" to any path (e.g. "/profile/nameofsomeone")
 
+
+## Testing with the client side
+
+Set up the [client side project](https://github.com/maxbendick/SeniorProjectProfilesApp) if you haven't already.
+
+From the root of the client side project, run: 
+
+````npm run build````
+
+Copy the contents of the newly created ````dist```` folder to ````<path to this project>/resources/public/````, creating directories as needed.
+
+Run ````lein ring server```` and it should open up a browser to a locally-served version of the app.
+
 ## License
 
 Copyright © 2017 Vertible

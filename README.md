@@ -28,7 +28,7 @@ Now you can try running requests against our app like:
 where you can change "/" to any path (e.g. "/profile/nameofsomeone")
 
 
-## Testing with the client side
+## Running locally with the client side
 
 Set up the [client side project](https://github.com/maxbendick/SeniorProjectProfilesApp) if you haven't already.
 

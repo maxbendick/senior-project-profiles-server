@@ -8,8 +8,28 @@
 
 (defn get-company-by-name [name]
   "Return the Orb JSON response for the given company name"
-  (client/get (str API_ENDPOINT "&name=" name) {:as :json}))
+  (let [resp (:body (client/get (str API_ENDPOINT "&name=" name) {:as :json}))]
+    (if (and (= (:code resp) "OK")
+            (>= (:result_count resp) 1))
+        resp
+        nil)))
 
 (defn get-company-by-website [website]
   "Return the Orb JSON response for the given company website, where website is like 'company.com'"
-  (client/get (str API_ENDPOINT "&webdomain=" website) {:as :json}))
+  (let [resp (:body (client/get (str API_ENDPOINT "&webdomain=" website) {:as :json}))]
+    (if (and (= (:code resp) "OK")
+            (>= (:result_count resp) 1))
+        resp
+        nil)))
+
+(defn get-relevant-entry [resp]
+  "Return the most relevant entry from an Orb JSON response."
+  ; Currently just filters out non-null descriptions.
+  ; If there is not one entry with a non-null description, returns first entry
+  (let [entries (:result_set resp)]
+    (let [entries_desc (filter #(not (nil? (:description %))) entries)]
+      (if (= (count entries_desc) 0)
+          (first entries)
+          (if (= (count entries_desc) 1)
+              entries_desc
+              entries)))))

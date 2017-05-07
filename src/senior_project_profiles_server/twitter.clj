@@ -1,4 +1,4 @@
-(ns senior-project-profiles-server.orb
+(ns senior-project-profiles-server.twitter
   (:use [twitter.oauth]
         [twitter.callbacks]
         [twitter.callbacks.handlers]

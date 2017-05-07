@@ -25,7 +25,7 @@ Now you can try running requests against our app like:
 
 ````(app-routes {:request-method :get :uri "/"})````
 
-where you can change "/" to any path (e.g. "/profile/nameofsomeone")
+where you can change "/" to any path.
 
 
 ## Running locally with the client side

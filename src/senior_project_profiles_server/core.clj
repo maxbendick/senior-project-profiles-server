@@ -5,53 +5,46 @@
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response]]
             [ring.util.response :refer [resource-response content-type redirect]]
-            [google-apps-clj.google-drive :refer :all]
-            [google-apps-clj.credentials :as gauth]
             [clj-http.client :as client]
-            [senior-project-profiles-server.markdown-processor :refer [compile-xmarkdown]]
             [clojure.string :as str]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [senior-project-profiles-server.markdown-processor :refer [compile-xmarkdown]]
+            [senior-project-profiles-server.orb :refer [get-workplace-info]]
+            [senior-project-profiles-server.googleapi :refer [get-drive-files get-gdoc-body]]
+            [senior-project-profiles-server.orb :refer [company-card]]))
 
 (use 'ring.middleware.content-type)
 
-(def DRIVE_FOLDER "0B3o1bAVuv7uLa09weC1GYVlLVGs")
-(def NOT_FOUND_404 {:status 404}); :headers {"Content-Type" "text/html; charset=utf-8"} :body "Not found"})
+(def NOT_FOUND_404 {:status 404}) ; :headers {"Content-Type" "text/html; charset=utf-8"} :body "Not found"})
 
 
-(defn get-files []
-  "Returns a list of {:title :id :export-text} for each file in the Drive folder"
-  (let [scopes [com.google.api.services.drive.DriveScopes/DRIVE]
-        creds (gauth/default-credential scopes)
-        resp (google-apps-clj.google-drive/list-files! creds DRIVE_FOLDER {:pageSize 1000})
-        get-wanted-info (fn [info] {:title (:title info), :id (:id info), :export-text (:text/plain (:export-links info))})]
-    (map get-wanted-info resp)))
-
-
-(defn get-body [resp]
-  "Returns the body of the given http response as a string"
-  (as-> resp input
-    (str input)
-    (re-find #":body (.*?), :|:body (.*?)}" input)
-    (remove nil? input)
-    (nth input 1)
-    (clojure.string/replace input #"\\r\\n" "\n")
-    (clojure.string/replace input #"\\\"" "\"")))
+(defn add-card [response card]
+  "Adds a new card to the response (creates the cards list if it doens't exist)."
+  ; position of new card isn't guaranteed b/c of 'conj'
+  (let [new-cards-list (into [] (conj (:cards response) card))]
+    (assoc response :cards new-cards-list)))
 
 
 (defroutes app-routes
   (GET "/" [] "Welcome to Vertible!")
 
-  (GET "/profile/:name" [name] ; where name is the filename as it appears in Drive
-    (as-> (get-files) input
+  (GET "/gprofile/:name" [name] ; where name is the filename as it appears in Drive
+    (as-> (get-drive-files) input
       (first (filter #(= (:title %) name) input))
       (if input
         {:body (as-> input x
                    (:export-text x)
                    (client/get x)
-                   (get-body x)
+                   (get-gdoc-body x)
                    (subs x 2 (- (count x) 1))
                    (compile-xmarkdown x))}; can't use {:as :clojure} because it cuts off part of the body
         NOT_FOUND_404)))
+
+  (GET "/profile/" {params :params}
+    ; TODO: 
+    ;  - do analysis and return the results for the profile
+    ;  - handle the case when no params are given
+    {:body {:right (add-card params (company-card (:company params)))}})
 
   (GET "/app/*" [] (io/resource "public/index.html"))
 
@@ -74,7 +67,8 @@
     {:status 200, :headers {"Content-Type" "text/html; charset=utf-8"}, :body "Hello World"})
 
 
-  (app-routes {:request-method :get :uri "/profile/JimBobGoogle"})
+  (app-routes {:request-method :get :uri "/gprofile/TemplateFormat"})
+  (app-routes {:request-method :get :uri "/profile?name=Bob Smith&company=Google&twitter=potus"})
 
   "To load in the repl"
    (use 'senior-project-profiles-server.core :reload)

@@ -11,7 +11,9 @@
             [senior-project-profiles-server.markdown-processor :refer [compile-xmarkdown]]
             [senior-project-profiles-server.orb :refer [get-workplace-info]]
             [senior-project-profiles-server.googleapi :refer [get-drive-files get-gdoc-body]]
-            [senior-project-profiles-server.orb :refer [company-card]]))
+            [senior-project-profiles-server.orb :refer [company-card]
+            [senior-project-profiles-server.twitter :refer [get-tweet-blob]
+            [senior-project-profiles-server.watson :refer [get-big5]]))
 
 (use 'ring.middleware.content-type)
 
@@ -23,6 +25,11 @@
   ; position of new card isn't guaranteed b/c of 'conj'
   (let [new-cards-list (into [] (conj (:cards response) card))]
     (assoc response :cards new-cards-list)))
+
+
+(defn twitter-to-big5 [handle]
+  "Given a twitter handle, returns a map of the big 5 trait scores for that tweeter."
+  (get-big5 (get-tweet-blob handle)))
 
 
 (defroutes app-routes

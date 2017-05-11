@@ -37,6 +37,16 @@
   (get buyer-types x))
 
 
+(defn max-index
+  [v]
+  (first (apply max-key second (map-indexed vector v))))
+
+
+(defn vec-to-col
+  [x]
+  (map (fn [xi] [xi]) x))
+
+
 (defn dominant-index
   [matrix vector]
   (max-index (flatten (mmul matrix (vec-to-col vector)))))
@@ -45,13 +55,3 @@
 (defn buyer-to-buyer-type
   [buyer]
   (index-to-buyer-type (dominant-index buyer-matrix (buyer-to-vec buyer))))
-
-
-(defn vec-to-col
-  [x]
-  (map (fn [xi] [xi]) x))
-
-
-(defn max-index
-  [v]
-  (first (apply max-key second (map-indexed vector v))))

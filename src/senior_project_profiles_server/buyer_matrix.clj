@@ -1,24 +1,49 @@
 (ns senior-project-profiles-server.buyer-matrix
   (:refer-clojure :exclude [* - + / == < <= > >= not= = min max])
-  (:require [clojure.core.matrix :refer :all]))
+  (:require [clojure.core.matrix :refer :all]
+            [clojure.java.io :as io]
+            [clojure.data.csv :as csv]))
 
-(def buyer-matrix [[1 0 1]
-                   [1 1 0]
-                   [0 1 1]])
+(def parsed-csv
+  (with-open [in-file (io/reader "src/senior_project_profiles_server/buyermatrix.csv")]
+    (doall
+      (csv/read-csv in-file))))
 
-;These correspond to columns in the matrix and elements in the buyer props
-(def buyer-props ["openness"
-                  "conscien"
-                  "extraver"])
+parsed-csv
 
-;These correspond to rows in the matrix
-(def buyer-types ["decisive"
-                  "consensu"
-                  "relation"])
 
-(def buyer {"openness" 1
-            "conscien" 1
-            "extraver" 0.1})
+
+(def buyer-matrix
+  (transpose (map (fn [row] (map read-string row))
+                  (rest (map rest parsed-csv)))))
+
+buyer-matrix
+
+
+
+(def buyer-props
+  "The first value of every column except the first.
+  These correspond to columns in the matrix and elements in the buyer props"
+  (into [] (map first (rest parsed-csv))))
+
+buyer-props
+
+
+
+(def buyer-types
+  "The first row without the first element.
+  These correspond to rows in the matrix."
+  (into [] (rest (first parsed-csv))))
+
+buyer-types
+
+
+
+(def buyer {"Openness"          1000
+            "conscientiousness" 1000
+            "Extraversion"      1
+            "Agreeableness"     1
+            "Neroticism"        1})
 
 
 (defn buyer-to-vec
@@ -28,6 +53,10 @@
 (defn index-to-buyer-type
   [x]
   (get buyer-types x))
+
+(defn dominant-index
+  [matrix vector]
+  (max-index (flatten (mmul matrix (vec-to-col vector)))))
 
 (defn buyer-to-buyer-type
   [buyer]
@@ -41,32 +70,5 @@
   [v]
   (first (apply max-key second (map-indexed vector v))))
 
-(defn dominant-index
-  [matrix vector]
-  (max-index (flatten (mmul matrix (vec-to-col vector)))))
 
-(buyer-to-buyer-type {"openness" 1
-                      "conscien" 1
-                      "extraver" 0.1})
-
-;(let [openness-ind 0
-;      conscien-ind 1
-;      extraver-ind 2;
-
-;      decisive-vec [1 0 1]
-;      consensu-vec [1 1 0]
-;      relation-vec [0 1 1];
-
-;      buyer-mat [decisive-vec
-;                 consensu-vec
-;                 relation-vec]
-
-;      buyer-vec (buyer-to-vec buyer)];[1 1 0.1]]
-
-;  (index-to-buyer-type (dominant-index buyer-mat buyer-vec)))
-
-;(let [openness (get buyer "openness")
-;        conscien (get buyer "conscien")
-;        extraver (get buyer "extraver")]
-
-;[openness conscien extraver]))
+(buyer-to-buyer-type buyer)

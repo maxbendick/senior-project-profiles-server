@@ -27,13 +27,6 @@
   (into [] (rest (first parsed-csv))))
 
 
-(def buyer {"Openness"          1000
-            "conscientiousness" 1000
-            "Extraversion"      1
-            "Agreeableness"     1
-            "Neroticism"        1})
-
-
 (defn buyer-to-vec
   [buyer]
   (map (fn [prop] (get buyer prop)) buyer-props))

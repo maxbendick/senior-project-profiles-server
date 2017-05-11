@@ -11,7 +11,7 @@
             [senior-project-profiles-server.markdown-processor :refer [compile-xmarkdown]]
             [senior-project-profiles-server.orb :refer [get-workplace-info]]
             [senior-project-profiles-server.googleapi :refer [get-drive-files get-gdoc-body]]
-            [senior-project-profiles-server.orb :refer [company-card]
+            [senior-project-profiles-server.orb :refer [company-card]]
             [senior-project-profiles-server.twitter :refer [get-tweet-blob]
             [senior-project-profiles-server.watson :refer [get-big5]]))
 

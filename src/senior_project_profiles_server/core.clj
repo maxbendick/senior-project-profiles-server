@@ -1,16 +1,9 @@
 (ns senior-project-profiles-server.core
-  (:require ;[clojure.string :as str]
-            [compojure.core :refer :all]
+  (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response]]
-            ;[ring.util.response :refer [resource-response content-type redirect]]
-            ;[clj-http.client :as client]
-            ;[clojure.string :as str]
             [clojure.java.io :as io]
-            ;[senior-project-profiles-server.markdown-processor :refer [compile-xmarkdown]]
-            ;[senior-project-profiles-server.orb :refer [get-workplace-info]]
-            ;[senior-project-profiles-server.googleapi :refer [get-drive-files get-gdoc-body]]
             [senior-project-profiles-server.orb :refer [company-card]]
             [senior-project-profiles-server.twitter :refer [get-tweet-blob]]
             [senior-project-profiles-server.watson :refer [get-big5]]
@@ -18,12 +11,7 @@
 
 (use 'ring.middleware.content-type)
 
-(def NOT_FOUND_404 {:status 404}) ; :headers {"Content-Type" "text/html; charset=utf-8"} :body "Not found"})
-
-(defn dumb-app
-  [request]
-  {:body "This is a dumb response for your dumb request"
-   :status 200})
+(def NOT_FOUND_404 {:status 404})
 
 (defn add-card [response card]
   "Adds a new card to the response (creates the cards list if it doens't exist)."
@@ -47,18 +35,6 @@
 
 (defroutes app-routes
   (GET "/" [] "Welcome to Vertible!")
-
-;;   (GET "/gprofile/:name" [name] ; where name is the filename as it appears in Drive
-;;     (as-> (get-drive-files) input
-;;       (first (filter #(= (:title %) name) input))
-;;       (if input
-;;         {:body (as-> input x
-;;                    (:export-text x)
-;;                    (client/get x)
-;;                    (get-gdoc-body x)
-;;                    (subs x 2 (- (count x) 1))
-;;                    (compile-xmarkdown x))}; can't use {:as :clojure} because it cuts off part of the body
-;;         NOT_FOUND_404)))
 
   (GET "/profile/" {params :params}
     ; TODO:

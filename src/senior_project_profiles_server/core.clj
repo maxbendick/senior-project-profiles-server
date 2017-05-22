@@ -32,6 +32,8 @@
   "Given a twitter handle, returns a map of the big 5 trait scores for that tweeter."
   (get-big5 (get-tweet-blob handle)))
 
+(def twitter-to-big5-memo (memoize twitter-to-big5))
+
 
 (defroutes app-routes
   (GET "/" [] "Welcome to Vertible!")
@@ -40,12 +42,14 @@
     ; TODO:
     ;  - handle the case when no params are given
     ;  - handle the case when a nonexistent/non-public twitter handle is given
-    {:body {:right (add-cards params [{:title "Buyer Type" :content (buyer-to-buyer-type (twitter-to-big5 (:twitter params)))}
+    {:body {:right (add-cards params [{:title "Buyer Type"
+                                       :content (buyer-to-buyer-type (twitter-to-big5-memo (:twitter params)))}
                                       (company-card (:company params))])}})
 
+
   (GET "/test-twitter/:handle" [handle]
-    {:body {:buyer-type (buyer-to-buyer-type (twitter-to-big5 handle))
-            :ocean-scores (twitter-to-big5 handle)
+    {:body {:buyer-type (buyer-to-buyer-type (twitter-to-big5-memo handle))
+            :ocean-scores (twitter-to-big5-memo handle)
             :twitter-handle handle}})
 
   (GET "/app/*" [] (io/resource "public/index.html"))
@@ -74,7 +78,7 @@
 
   (app-routes {:request-method :get
         :uri "/profile"})
-  
+
   "To load in the repl"
    (use 'senior-project-profiles-server.core :reload)
 

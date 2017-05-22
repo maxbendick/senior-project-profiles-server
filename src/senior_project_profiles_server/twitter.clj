@@ -1,11 +1,16 @@
 (ns senior-project-profiles-server.twitter
-  (:use [twitter.oauth]
-        [twitter.callbacks]
-        [twitter.callbacks.handlers]
-        [twitter.api.restful]
-        [clojure.string])
+   (:use [twitter.oauth]
+         [twitter.callbacks]
+         [twitter.callbacks.handlers]
+         [twitter.api.restful])
+
   (:import [twitter.callbacks.protocols SyncSingleCallback])
-  (:require [clj-http.client :as client]))
+
+  (:require ;[twitter.oauth :refer [make-oauth-creds]]
+            ;[twitter.api.restful :refer [get-tweets]]
+            [clojure.string :as str]))
+
+  ;(:require [clj-http.client :as client]))
 
 ; https://github.com/adamwynne/twitter-api
 
@@ -24,4 +29,4 @@
 
 (defn get-tweet-blob [handle]
   "Returns a single string of all the most recent tweets for username 'handle'."
-  (clojure.string/join " " (map #(:text %) (:body (get-tweets handle)))))
+  (str/join " " (map #(:text %) (:body (get-tweets handle)))))

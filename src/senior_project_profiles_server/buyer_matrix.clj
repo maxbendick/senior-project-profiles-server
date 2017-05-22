@@ -4,11 +4,19 @@
             [clojure.java.io :as io]
             [clojure.data.csv :as csv]))
 
-(def parsed-csv
-  (with-open [in-file (io/reader "src/senior_project_profiles_server/buyermatrix.csv")]
-    (doall
-      (csv/read-csv in-file))))
+;(comment
+;  (def parsed-csv
+;    (with-open [in-file (io/reader "src/senior_project_profiles_server/buyermatrix.csv")]
+;      (doall
+;       (csv/read-csv in-file)))))
 
+(def parsed-csv
+  '(["" "Decisive" "Consensus" "Relationship" "Skeptical" "Analytical Al" "Innovator"]
+    ["Openness" "50" "75" "75" "15" "50" "75"]
+    ["conscientiousness" "15" "75" "50" "75" "75" "25"]
+    ["Extraversion" "75" "50" "75" "25" "25" "75"]
+    ["Agreeableness" "15" "75" "75" "25" "25" "50"]
+    ["Neroticism" "75" "15" "50" "25" "25" "75"]))
 
 (def buyer-matrix
   (transpose (map (fn [row] (map read-string row))

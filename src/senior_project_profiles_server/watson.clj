@@ -3,8 +3,8 @@
   (:require [clojure.data.json :as json]))
 
 (def API_URL "https://gateway.watsonplatform.net/personality-insights/api/v2/profile")
-(def USER "358d1379-52d4-4179-8ff9-b27c594b48bc")
-(def PASSWORD "hRs4gERTeSDa")
+(def USER "b9454b2f-929b-4960-8738-bc9093c19919")
+(def PASSWORD "iNw1ngenyEj1")
 
 (defn get-insights [text]
     "Return the JSON object from Watson's personality insights API based on the given text."
